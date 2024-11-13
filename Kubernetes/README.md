@@ -574,7 +574,7 @@ Type 1: `requiredDuringSchedulingIgnoredDuringExecution` <br>
 & <br>
 Type 2: `preferredDuringSchedulingIgnoredDuringExecution`
 & <br>
-Type 3: `requiredDuringSchedulingRequiredDuringExecution`
+Type 3: `requiredDuringSchedulingRequiredDuringExecution` 
 The difference:
 
 | | DuringScheduling | DuringExecution |
@@ -619,3 +619,163 @@ spec:
 			labels:
 				app: App1
 ```
+
+## Resource Requirements and Limits
+
+Pods use CPU and Memory, the kube-scehduler is responsible for allocating pods to nodes.
+
+You can specify the requirements of a Pod. Allocating 1 CPU and 1 Gi of Memory.
+
+To do this in the `pod-definition.yaml` file we add the `resource` line:
+
+```
+resources:
+  requests:
+    memory: "4Gi"
+    cpu: 2
+``` 
+
+You can specify any CPU value as low as 0.1 or 100m (m = milli) and as low as 1m.
+
+The 1 count of CPU is equivalent to 1 vCPU - in AWS or 1 Azure Core or 1 Hyperthread.
+
+For Memory: you can specify 256 Mi or specify it as a whole number like 256731.
+
+There is a difference between `Gi and G bytes`, 
+
+| Size | Annotation |
+|-------| -----------|
+| 1  GB - Gigabyte | 1,000,000,000 Bytes |
+| 1 M - Megabyte | 1,000,000 Bytes |
+| 1 K - Kilobyte | 1,000 Bytes |
+--------------------------------
+| 1 Gi - Gibibyte | = 1,073,741,824 Bytes |
+| 1 Mi - Mebibyte | = 1,048, 576 Bytes |
+| 1 Ki - Kibibyte | = 1,024 Bytes |
+
+If a Pod attempts to use more than its CPU limit, it will `Throttle` it and limit it.
+This is different for Memory, a Pod can use more than its limit but if this happens then the pod is `terminated` with an OOM error message
+
+### Differente CPU Scenarios:
+
+No Requests  + No Limits: 1 Pod can consume all the CPU resources on a node
+
+No Requests + Limits: Requests and limits are equal, if a limit is 3 vCPU, then the request can be at max the limit
+
+Requests + Limits: Each pod is guaranteed a certain number of vCPU's, i.e. 1 with a limit of 3 - looks to be the most ideal but not reliability
+
+Requests + No Limits: Each pod is guranteed its requested vCPUs but since there are no limits, each pod can consume as many resources as it needs when they're available - Most Ideal.
+
+You must set requests set for the pod!
+
+
+### Different Memory Scenarios:
+
+No Requests + No Limits: 1 Pod can consume all resources preventing second pod from working correctly
+
+No Requests + Limits: Again, requests = limits,
+
+Requests + Limits: Each pod is getting set amount of memory
+
+Requests + No Limits: Pods are guaranteed their resources but if pod 2 requests more memory then the only way is to `Kill` pod 1.
+This is because you cant `throttle memory` 
+
+### To Specify cpu for our pods we use `Limit Ranges`
+
+These are at the namespace level:
+
+``` 
+spec:
+  limits:
+  - default:       ## This is the limit
+      cpu 500m
+    defaultRequest:   ## This is the request
+      cpu: 500m    
+    max:              ## The maximum limit
+      cpu: "1"
+    min:              ## This is the minimum request
+      cpu: 100m
+    type: Container
+```
+
+To specify the total limit for `All pods in a node`, we use `Resource Quotas`
+
+This is another namespace level object:
+
+```
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: my-resource-quota
+spec:
+  hard:
+    requests.cpu: 4
+    requests.memory: 4Gi
+    limits.cpu: 10
+    limits.memory: 10Gi
+``` 
+
+### A quick note on editing Pods and Deployments
+
+### Edit a POD
+You CANNOT edit specifications of an existing POD other than the below.
+
+- spec.containers[*].image
+
+- spec.initContainers[*].image
+
+- spec.activeDeadlineSeconds
+
+- spec.tolerations
+
+For example you cannot edit the environment variables, service accounts, resource limits (all of which we will discuss later) of a running pod. But if you really want to, you have 2 options:
+
+![alt text](./images/editYaml.png)
+
+
+![alt text](./images/saveYaml.png)
+
+
+A copy of the file with your changes is saved in a temporary location as shown above.
+
+You can then delete the existing pod by running the command:
+
+`kubectl delete pod webapp`
+
+
+
+Then create a new pod with your changes using the temporary file
+
+`kubectl create -f /tmp/kubectl-edit-ccvrq.yaml`
+
+
+
+The second option is to extract the pod definition in YAML format to a file using the command:
+
+`kubectl get pod webapp -o yaml > my-new-pod.yaml`
+
+Then make the changes to the exported file using an editor (vi editor). Save the changes:
+
+`vi my-new-pod.yaml`
+
+Then delete the existing pod
+
+`kubectl delete pod webapp`
+
+Then create a new pod with the edited file
+
+`kubectl create -f my-new-pod.yaml`
+
+
+
+### Edit Deployments
+With Deployments you can easily edit any field/property of the POD template. <br> Since the pod template is a child of the deployment specification,  with every change the deployment will automatically delete and create a new pod with the new changes. 
+
+So if you are asked to edit a property of a POD part of a deployment you may do that simply by running the command:
+
+`kubectl edit deployment my-deployment`
+
+
+## Useful Tips
+
+- To indent some lines in vim editor: `Shift + .` 
