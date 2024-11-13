@@ -775,6 +775,50 @@ So if you are asked to edit a property of a POD part of a deployment you may do 
 
 `kubectl edit deployment my-deployment`
 
+## Daemon Sets
+
+ Daemon sets are like replica sets, they help deploy multiple instances of pods. They run 1 copy of your pod on each node in your cluster. <br> When a new node is added to the cluster, a replica of the pod is automatically added to the node. When the node is removed, so is the pod.
+
+ The purpose of the daemon set is to `ensure 1 copy of the pod is always available` in all nodes in the cluster.
+
+ Use Case:
+
+- Want to deploy a monitoring agent or log collector on each node to monitor the cluster 
+- Having a Daemon set run a kube-proxy which is required for all pods is a great use case for them.
+- Networking solutions - like weave-net.
+
+Creating a daemon set is similar to creating a replica set. Has nested pod specification under the template section:
+
+```
+apiVersion: app/v1
+kind: DaemonSet
+metadata:
+  name: monitoring-daemon
+spec:
+  selector:
+    matchLabels:
+      app: monitoring-agent
+  template:
+    metadata:
+      labels:
+        app: monitoring-agent
+    spec:
+      containers:
+      - name: monitoring-agent
+        image: monitoring-agent
+```
+
+You create them the same as any file: `kubectl create -f daemon-set-def.yaml`.
+
+To view the daemonsets:
+
+`kubectl get daemonsets` and `kubectl describe daemonsets monitoring-daemon`.
+
+## How does it work?
+
+- You can set the nodeName to match the node name to schedule a pod to a specific pod > this was in the older versions before v1.1.2
+- v1.12 onwards uses NodeAffinity and default schedulder
+
 
 ## Useful Tips
 
