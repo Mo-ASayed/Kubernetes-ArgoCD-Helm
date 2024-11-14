@@ -820,6 +820,12 @@ To view the daemonsets:
 - v1.12 onwards uses NodeAffinity and default schedulder
 
 
+## Static Pods
+
+A static pod ALWAYS has the a namespace attached to the end of it so <pod-name>-<namespace-name>
+
 ## Useful Tips
 
 - To indent some lines in vim editor: `Shift + .` 
+- --(name) example: --image = a FLAG
+- -- (name) example: -- sleep = a COMMAND
