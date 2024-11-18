@@ -824,8 +824,37 @@ To view the daemonsets:
 
 A static pod ALWAYS has the a namespace attached to the end of it so <pod-name>-<namespace-name>
 
-## Useful Tips
+They are managed directly by the kubelet rather than the API server.
+Useful for bootstrapping the control plane or deploying essential components.
 
-- To indent some lines in vim editor: `Shift + .` 
-- --(name) example: --image = a FLAG
-- -- (name) example: -- sleep = a COMMAND
+Example:
+To check for static pods:
+
+`kubectl get pods --all-namespaces -o wide | grep -i static`
+
+## Useful Tips
+### Vim Editor Tips
+
+### To indent multiple lines in Vim:
+`Visual select lines (Shift + V), then press > to indent or < to un-indent.`
+### To quickly save and exit:
+`:wq or Shift + ZZ.`
+
+### Kubernetes CLI
+Flags and Commands:
+`--image=nginx: A flag specifying an image for a pod or deployment.`
+`-- sleep 100: A command that runs inside the container (e.g., sleep for 100 seconds).`
+### Pod Debugging
+To describe a pod and check its events:
+
+`kubectl describe pod <pod-name>`
+To check pod logs:
+
+`kubectl logs <pod-name>`
+
+General Kubernetes Notes
+Kubelet Logs: For static pods or troubleshooting, access the kubelet logs:
+
+`journalctl -u kubelet`
+Node Selection:
+Use `kubectl get nodes` to list nodes and their labels for `NodeAffinity` configurations.
