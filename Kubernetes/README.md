@@ -858,3 +858,28 @@ Kubelet Logs: For static pods or troubleshooting, access the kubelet logs:
 `journalctl -u kubelet`
 Node Selection:
 Use `kubectl get nodes` to list nodes and their labels for `NodeAffinity` configurations.
+
+
+# Rollout and Versioning
+
+The rollout command:
+`kubectl rollout status deployment/myapp-deployment`
+
+To see the history of the rollout:
+`kubectl rollout history deployment/myapp-deployment`
+
+### Deployment Strategy
+
+- Destroy the instances then recreate them - issue is down-time - recreate strategy and is not the default
+
+- Take down and spin up pods one by one - a rolling update.
+
+### How do you update your deployment?
+
+- Update the config file with newer versions etc
+- Use `kubectl set image` - this will/can change the deployment file
+
+To undo the deployment to previous version you use:
+`kubectl rollout undo deployment/myapp-deployment`
+
+## Commans and Arugments
