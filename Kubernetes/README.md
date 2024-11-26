@@ -882,4 +882,4 @@ To see the history of the rollout:
 To undo the deployment to previous version you use:
 `kubectl rollout undo deployment/myapp-deployment`
 
-## Commans and Arugments
+## Commands and Arugments
