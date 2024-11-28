@@ -78,7 +78,7 @@ jobs:
             tflint --version
   
         - name: Terraform Lint
-          working-directory: terraform  
+          working-directory: k8s-advanced-lab/terraform  
           run: tflint
   
   terraform_plan:
