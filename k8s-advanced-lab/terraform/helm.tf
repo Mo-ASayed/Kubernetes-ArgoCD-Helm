@@ -19,7 +19,7 @@ resource "helm_release" "cert_manager" {
   }
 
   values = [
-    "${file("helm-values/cert-manager.yaml")}"
+    file("helm-values/cert-manager.yaml")
   ]
 }
 
@@ -36,7 +36,7 @@ resource "helm_release" "external_dns" {
   }
 
   values = [
-    "${file("helm-values/external-dns.yaml")}"
+    file("helm-values/external-dns.yaml")
   ]
 }
 
@@ -49,6 +49,6 @@ resource "helm_release" "argocd_deploy" {
   create_namespace = true
 
   values = [
-    "${file("helm-values/argocdconfig.yaml")}"
+    file("helm-values/argocdconfig.yaml")
   ]
 } 
