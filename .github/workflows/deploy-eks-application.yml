@@ -57,7 +57,7 @@ jobs:
           working-directory: k8s-advanced-lab/terraform
   
         - name: Terraform Format check
-          working-directory: terraform  
+          working-directory: k8s-advanced-lab/terraform  
           run: |
             terraform fmt -check
             if [ $? -ne 0 ]; then
