@@ -163,3 +163,13 @@ jobs:
         - name: Verify Ingress Resources
           run: |
             kubectl get ing -A
+        
+        - name: Send Discord Notification on Success build
+          if: success()
+          run: |
+            BRANCH_NAME=$(echo "${GITHUB_REF#refs/heads/}")
+            TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+            COMMITTER=${GITHUB_ACTOR}
+            curl -H "Content-Type: application/json" \
+            -d "{\"content\": \"✅ Argo CD deployed succesfully 🐙: in repo ${{ github.event.repository.name }}, ${BRANCH_NAME} at ${TIMESTAMP}. Committer: ${COMMITTER}\"}" \
+            ${{ secrets.DISCORD_WEBHOOK_URL }}  
