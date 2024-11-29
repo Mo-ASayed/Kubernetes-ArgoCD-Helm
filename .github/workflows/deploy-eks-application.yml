@@ -131,3 +131,35 @@ jobs:
             curl -H "Content-Type: application/json" \
             -d "{\"content\": \"✅ Application built succesfully: in repo ${{ github.event.repository.name }}, ${BRANCH_NAME} at ${TIMESTAMP}. Committer: ${COMMITTER}\"}" \
              ${{ secrets.DISCORD_WEBHOOK_URL }}  
+
+  create_argo_cd:
+      name: 'Create ArgoCD'
+      runs-on: ubuntu-latest
+      needs: [terraform_apply]
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+
+        - name: Configure kubectl
+          run: |
+            aws eks update-kubeconfig --name eks-lab --region us-east-1 
+          env:
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_DEFAULT_REGION: 'us-east-1'
+
+        - name: Apply ClusterIssuer
+          run: |
+            kubectl apply -f k8s-advanced-lab/terraform/cert-man/issuer.yaml
+
+        - name: Configure aws-auth ConfigMap
+          run: |
+            kubectl apply -f k8s-advanced-lab/terraform/k8s-config/aws-auth.yaml
+
+        - name: Deploy ArgoCD Ingress
+          run: |
+            kubectl apply -f k8s-advanced-lab/terraform/apps/app-hub.yaml
+
+        - name: Verify Ingress Resources
+          run: |
+            kubectl get ing -A
