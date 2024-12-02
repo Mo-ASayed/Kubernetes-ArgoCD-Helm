@@ -1,4 +1,4 @@
-name: 'Push docker image to dockerhub'
+name: 'Push docker image to ECR'
 
 on:
     workflow_dispatch:
@@ -7,7 +7,6 @@ on:
           description: 'Type "yes" to confirm deployment'
           required: true
           default: 'no'
-        
 
 jobs:
   build-and-push:
@@ -35,7 +34,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
-    
+
       - name: Log in to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
