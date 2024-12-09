@@ -930,3 +930,18 @@ spec:
     image: busybox:1.28
     command: ['sh', '-c', 'until nslookup mydb; do echo waiting for mydb; sleep 2; done;']
 ```
+
+### Useful command
+
+`k logs "pod-name" -c "container-name"` so for exmaple: `k logs my-pod -c "first-container"
+
+- This lets you get the log of the specific container within the Pod (if there are multiple)
+
+
+# Operating System Upgrade
+
+- `Pod Eviction timeout` - the length of time it(master-node) waits for a pod to come back online, default 5 mins.
+
+- `kubectl drain node-1`: `kubectl cordon node-2`: `kubectl uncordon node-1` 
+
+Commands that prevent and un-prevent a node from being scheduled onto it. Cordon does not terminate the pods like drain.
