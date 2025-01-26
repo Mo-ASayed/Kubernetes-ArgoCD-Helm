@@ -16,7 +16,7 @@ server:
     hosts:
     - argocd.lab.mohammedsayed.com
     tls:
-    - secretName: argocd-ingress-tls
+    - secretName: argocd-server-tls
       hosts:
       - argocd.lab.mohammedsayed.com
 
