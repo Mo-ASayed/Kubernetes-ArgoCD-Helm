@@ -4,7 +4,7 @@ module "cert_manager_irsa_role" {
   role_name                     = "cert-manager"
   version                       = "5.2.0"
   attach_cert_manager_policy    = true
-  cert_manager_hosted_zone_arns = ["arn:aws:route53:::hostedzone/Z0532739DYWX1VAIUKTG"]
+  cert_manager_hosted_zone_arns = ["arn:aws:route53:::hostedzone/Z0532739DYWX1VAIUKTG"] # This needs changing since the old hosted zone was deleted
 
   oidc_providers = {
     eks = {
@@ -22,7 +22,7 @@ module "external_dns_irsa_role" {
   version                       = "5.2.0"
   role_name                     = "external-dns"
   attach_external_dns_policy    = true
-  external_dns_hosted_zone_arns = ["arn:aws:route53:::hostedzone/Z0532739DYWX1VAIUKTG"]
+  external_dns_hosted_zone_arns = ["arn:aws:route53:::hostedzone/Z0532739DYWX1VAIUKTG"] # This needs changing since the old hosted zone was deleted
 
   oidc_providers = {
     eks = {
