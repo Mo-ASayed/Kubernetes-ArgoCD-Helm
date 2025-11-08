@@ -14,11 +14,11 @@ server:
       # nginx.ingress.kubernetes.io/whitelist-source-range: 86.171.212.33, 31.14.250.41
 
     hosts:
-    - argocd.lab.mohammedsayed.com
+    - argocd.lab.mohammedsayed.com # This needs changing since the old hosted zone was deleted
     tls:
     - secretName: argocd-server-tls
       hosts:
-      - argocd.lab.mohammedsayed.com
+      - argocd.lab.mohammedsayed.com # This needs changing since the old hosted zone was deleted
 
 global:
-  domain: argocd.lab.mohammedsayed.com
+  domain: argocd.lab.mohammedsayed.com # This needs changing since the old hosted zone was deleted 
