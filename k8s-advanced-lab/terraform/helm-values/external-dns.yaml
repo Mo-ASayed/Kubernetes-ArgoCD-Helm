@@ -9,4 +9,4 @@ serviceAccount:
     eks.amazonaws.com/role-arn: "arn:aws:iam::767398132018:role/external-dns"
 
 domainFilters:
-  - lab.mohammedsayed.com # This needs changing since the old hosted zone was deleted
+  - lab.mohammedsayed.com

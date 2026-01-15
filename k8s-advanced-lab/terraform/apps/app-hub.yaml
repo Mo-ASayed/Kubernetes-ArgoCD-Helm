@@ -1,32 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: the-app-hub
+  name: game-2048
   labels:
-    app: the-app-hub
+    app: game-2048
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: the-app-hub
+      app: game-2048
   template:
     metadata:
       labels:
-        app: the-app-hub
+        app: game-2048
     spec:
+      hostNetwork: true 
       containers:
-        - name: the-app-hub
-          image: moabukar/the-app-hub:22e0324 # change this to a new, working image of anything
+        - name: game-2048
+          image: agrawpri/2048-docker
           ports:
             - containerPort: 3000
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: the-app-hub
+  name: game-2048
 spec:
   selector:
-    app: the-app-hub
+    app: game-2048
   type: ClusterIP
   ports:
     - name: http
@@ -35,28 +36,27 @@ spec:
       targetPort: 3000
     - name: app-port
       port: 3000
-
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: the-app-hub-ingress
+  name: game-2048-ingress
   annotations:
     cert-manager.io/cluster-issuer: "issuer"
 spec:
   ingressClassName: nginx
   rules:
-  - host: the-app-hub.lab.mohammedsayed.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: the-app-hub
-            port:
-              number: 80
+    - host: game-2048.lab.mohammedsayed.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: game-2048
+                port:
+                  number: 80
   tls:
     - hosts:
-        - the-app-hub.lab.mohammedsayed.com
-      secretName: the-app-hub-tls
+        - game-2048.lab.mohammedsayed.com
+      secretName: game-2048-tls
