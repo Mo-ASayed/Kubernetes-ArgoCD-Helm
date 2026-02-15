@@ -29,7 +29,6 @@ kubectl.kubeconfig
 .DS_Store
 Thumbs.db
 
-
 # Logs
 logs/
 *.log
@@ -54,8 +53,7 @@ coverage/
 *.pem
 db_password.txt
 *.exe
-
-#Terraform
+# Terraform
 # Local .terraform directories
 .terraform/
 
