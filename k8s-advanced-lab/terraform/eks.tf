@@ -12,7 +12,7 @@ module "eks" {
 
   eks_managed_node_group_defaults = {
     disk_size      = 50
-    instance_types = ["t2.medium", "t2.large"]
+    instance_types = ["t2a.micro", "t2a.micro"]
   }
 
   eks_managed_node_groups = {
